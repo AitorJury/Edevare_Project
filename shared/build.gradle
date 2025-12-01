@@ -1,0 +1,25 @@
+plugins {
+    // Kotlin Multiplatform y Serialización
+    id 'org.jetbrains.kotlin.multiplatform' version '1.9.22'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.22'
+}
+
+group = 'com.edevare.shared'
+version = '1.0-SNAPSHOT'
+
+kotlin {
+    // Backend (Java) pueda acceder a este código
+    jvm()
+
+    sourceSets {
+        commonMain {
+            // Aplicar las librerías a commonMain
+            dependencies {
+                // Cliente HTTP para KMP
+                api 'io.ktor:ktor-client-core:2.3.8'
+                // Librería para serializar DTOs a JSON
+                api 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3'
+            }
+        }
+    }
+}

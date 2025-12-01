@@ -1,0 +1,4 @@
+rootProject.name = 'edevare-project'
+
+// Incluye los tres módulos del Full Stack
+include 'backend', 'frontend', 'shared'

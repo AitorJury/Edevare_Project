@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    // Plugins de Spring Boot
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.edevare.backend'
+version = '0.0.1-SNAPSHOT'
+
+// Bloque Java (compatibilidad)
+java {
+    sourceCompatibility = 17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot y Web (API REST)
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Hibernate
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // Driver PostgreSQL
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // Seguridad
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    // JWT API
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // Módulo Compartido
+    implementation project(':shared')
+
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.mockito:mockito-core:5.11.0'
+
+    // JUnit 5
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.edevare'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+// Configuración general para todos los submódulos
+subprojects {
+    apply plugin: 'java'
+
+    repositories {
+        mavenCentral()
+    }
+}
