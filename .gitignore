@@ -44,3 +44,6 @@ bin/
 
 # Archivo de configuración local con clave
 /backend/src/main/resources/application-local.yml
+
+# Credenciales de Docker Compose
+.enves

@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  # Definición del servicio de BD
+  db:
+    image: postgres:latest
+    container_name: edevare-db
+
+    # Reinicia el contenedor si se detiene inesperadamente
+    restart: always
+
+    # Variables de entorno con las credenciales
+    environment:
+      POSTGRES_USER: edevare_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_ENV}
+      POSTGRES_DB: edevare_db
+
+    # Esto hace que la base de datos sea accesible por el puerto 5432
+    ports:
+      - "5432:5432"
+
+    # Asegura que los datos no se pierdan
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+# Definición de los volúmenes persistentes
+volumes:
+  postgres_data:
