@@ -46,4 +46,4 @@ bin/
 /backend/src/main/resources/application-local.yml
 
 # Credenciales de Docker Compose
-.enves
+.env
