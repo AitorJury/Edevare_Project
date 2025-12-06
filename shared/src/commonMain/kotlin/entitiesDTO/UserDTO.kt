@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class UserDTO(
     val id: Long,
     val email: String,
-    val rol : String //Se envia solo el nombre del rol no el objeto ROL entero
+    val roles : List<String> //Se envia solo el nombre del rol no el objeto ROL entero
 )

@@ -18,9 +18,9 @@ kotlin {
             // Aplicar las librerías a commonMain
             dependencies {
                 // Cliente HTTP para KMP
-                'io.ktor:ktor-client-core:2.3.8'
+                api 'io.ktor:ktor-client-core:2.3.8'
                 // Librería para serializar DTOs a JSON
-                'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3'
+                api'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3'
             }
         }
     }

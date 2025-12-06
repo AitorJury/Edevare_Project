@@ -2,6 +2,9 @@ package com.edevare.backend.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -15,9 +18,13 @@ public class User {
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_rol", nullable = false)
-    private Rol role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "id_user")
+            , inverseJoinColumns = @JoinColumn(name = "id_rol")
+    )
+    private Set<Rol> roles = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -43,11 +50,13 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    public Rol getRole() {
-        return role;
+    public Set<Rol> getRoles() {
+        return roles;
     }
 
-    public void setRole(Rol role) {
-        this.role = role;
+    public void setRoles(Set<Rol> roles) {
+        this.roles = roles;
     }
+
+
 }

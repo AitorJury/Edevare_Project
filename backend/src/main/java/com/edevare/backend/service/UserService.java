@@ -10,8 +10,10 @@ import com.edevare.shared.entitiesDTO.UserDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -31,21 +33,27 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO userRegister(UserDTO user, String roleName, String password) {
+    public UserDTO userRegister(UserDTO user, List<String> roles, String password) {
+
         // 1. Validar si el email ya existe
         if (userRepository.findUserByEmail(user.getEmail()).isPresent()) {
             throw new UserExistException("Email already exists");
         }
-        // 2. Buscar el Rol en la BD
-        Rol rol = rolRepository.findRolByName(roleName);
-        if (rol == null) {
-            throw new RoleExistException("Role does not exist");
+
+        Set<Rol> rolesAsigned = new HashSet<>();
+        for (String roleName : roles) {
+            Rol rol = rolRepository.findRolByName(roleName);
+            if (rol == null) {
+                throw new RoleExistException("Role does not exist");
+            }
+            rolesAsigned.add(rol);
         }
+
         //Coversion de DTO a entidad
         User newUser = new User();
         newUser.setEmail(user.getEmail());
         newUser.setPasswordHash(password);
-        newUser.setRole(rol);
+
 
         // 3. Asignar Rol y Guardar
         User savedUser = userRepository.save(newUser);
@@ -64,7 +72,7 @@ public class UserService {
     public List<UserDTO> findAll() {
         return userRepository.findAll().stream()
                 .map(this::mapToDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Rol findByRoleName(String roleName) {
@@ -72,10 +80,15 @@ public class UserService {
     }
 
     protected UserDTO mapToDTO(User user) {
+        // Convertimos el Set<Rol> a List<String> para el DTO
+        List<String> roleNames = user.getRoles().stream()
+                .map(Rol::getName)
+                .collect(Collectors.toList());
+
         return new UserDTO(
                 user.getId(),
                 user.getEmail(),
-                user.getRole().getName()
+                roleNames // Pasamos la lista
         );
     }
 
