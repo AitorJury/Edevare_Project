@@ -10,25 +10,28 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_tarea;
+    @Column(name = "id_task")
+    private Long idTask;
 
     @Column(name = "title", nullable = false)
     private String title;
 
     private String description;
     private String priority;
-    private boolean is_complete = false;//Por defecto en no completada
+    @Column(name = "is_completed")
+    private boolean completed = false;//Por defecto en no completada
     private LocalDateTime created_at = LocalDateTime.now();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user", nullable = false)
     private User user;
 
     public Long getId_task() {
-        return id_tarea;
+        return idTask;
     }
 
-    public void setId_tarea(Long id_tarea) {
-        this.id_tarea = id_tarea;
+    public void setIdTask(Long id_tarea) {
+        this.idTask = id_tarea;
     }
 
     public String getTitle() {
@@ -55,12 +58,12 @@ public class Task {
         this.priority = priority;
     }
 
-    public boolean isIs_complete() {
-        return is_complete;
+    public boolean isCompleted() {
+        return completed;
     }
 
-    public void setIs_complete(boolean is_complete) {
-        this.is_complete = is_complete;
+    public void setCompleted(boolean is_complete) {
+        this.completed = is_complete;
     }
 
     public LocalDateTime getCreated_at() {

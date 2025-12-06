@@ -33,14 +33,14 @@ public class TaskService {
     public TaskDTO createTask(TaskDTO taskDTO) {
         // 1. Buscamos al usuario (El ID viene dentro del DTO), si no lo encuentra lanza una excepcion
 
-        User user = userRepository.findById(taskDTO.getId_user())
+        User user = userRepository.findById(taskDTO.getIdUser())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         // 2. CONVERSIÓN: DTO a Entidad
         Task task = new Task();
         task.setTitle(taskDTO.getTitle());
         task.setPriority(taskDTO.getPriority());
-        task.setIs_complete(taskDTO.is_complete());
+        task.setCompleted(taskDTO.getCompleted());
         task.setUser(user);
 
         // 3. Guardar en BD
@@ -55,12 +55,12 @@ public class TaskService {
     public List<TaskDTO> getAllTaskFromUser(Long userID) {
 
         //Guardamos la lista de tareas en variable
-        List<Task> tasksList = taskRepository.findTaskByIdUser(userID);
+        List<Task> tasksList = taskRepository.findByUser_Id(userID);
 
         //Convertimos las tareas a DTO
         return tasksList.stream()
                 .map(this::mapToDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -72,9 +72,9 @@ public class TaskService {
                 task.getId_task(),
                 task.getTitle(),
                 task.getPriority(),
-                task.isIs_complete(),
+                task.isCompleted(),
                 task.getCreated_at().toString(),
-                task.getUser().getId_user()
+                task.getUser().getId()
         );
     }
 
