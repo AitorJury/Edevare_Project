@@ -1,0 +1,10 @@
+package com.edevare.shared.DTOsEntities
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class UserDTO(
+    val id: Long,
+    val email: String,
+    val rol : String //Se envia solo el nombre del rol no el objeto ROL entero
+)
