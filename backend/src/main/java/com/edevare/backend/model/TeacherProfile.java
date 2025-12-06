@@ -8,6 +8,7 @@ import java.util.Objects;
 @Table(name = "teacher_profile")
 public class TeacherProfile {
     @Id
+    @Column(name = "id_teacher")
     private Long id;//No hay que decirle que ser genere el id, porque es el que vendra del usuario
     @ManyToOne
     @JoinColumn(name = "id_user")

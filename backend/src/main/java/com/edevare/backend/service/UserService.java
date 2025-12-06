@@ -1,12 +1,14 @@
 package com.edevare.backend.service;
 
+import com.edevare.backend.config.SecurityConfig;
 import com.edevare.backend.exceptions.RoleExistException;
 import com.edevare.backend.exceptions.UserExistException;
 import com.edevare.backend.model.Rol;
 import com.edevare.backend.model.User;
 import com.edevare.backend.repository.RolRepository;
 import com.edevare.backend.repository.UserRepository;
-import com.edevare.shared.entitiesDTO.UserDTO;
+import com.edevare.shared.entitiesDTO.UserRequestDTO;
+import com.edevare.shared.entitiesDTO.UserResponseDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +27,17 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RolRepository rolRepository;
+    private final SecurityConfig securityConfig;
 
     //Este constructor sirve como inyector de dependencias, mejor que el @Autowire
-    public UserService(UserRepository userRepository, RolRepository rolRepository) {
+    public UserService(UserRepository userRepository, RolRepository rolRepository, SecurityConfig securityConfig) {
         this.userRepository = userRepository;
         this.rolRepository = rolRepository;
+        this.securityConfig = securityConfig;
     }
 
     @Transactional
-    public UserDTO userRegister(UserDTO user, List<String> roles, String password) {
+    public UserResponseDTO userRegister(UserRequestDTO user) {
 
         // 1. Validar si el email ya existe
         if (userRepository.findUserByEmail(user.getEmail()).isPresent()) {
@@ -41,7 +45,7 @@ public class UserService {
         }
 
         Set<Rol> rolesAsigned = new HashSet<>();
-        for (String roleName : roles) {
+        for (String roleName : user.getRoles()) {
             Rol rol = rolRepository.findRolByName(roleName);
             if (rol == null) {
                 throw new RoleExistException("Role does not exist");
@@ -52,7 +56,10 @@ public class UserService {
         //Coversion de DTO a entidad
         User newUser = new User();
         newUser.setEmail(user.getEmail());
-        newUser.setPasswordHash(password);
+        //Hasheo de la contraseña
+        String encodedPassword = securityConfig.passwordEncoder().encode(user.getPassword());
+        //Asignamos la contraseña hasheada
+        newUser.setPasswordHash(encodedPassword);
 
 
         // 3. Asignar Rol y Guardar
@@ -69,7 +76,7 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public List<UserDTO> findAll() {
+    public List<UserResponseDTO> findAll() {
         return userRepository.findAll().stream()
                 .map(this::mapToDTO)
                 .toList();
@@ -79,13 +86,13 @@ public class UserService {
         return rolRepository.findRolByName(roleName);
     }
 
-    protected UserDTO mapToDTO(User user) {
+    protected UserResponseDTO mapToDTO(User user) {
         // Convertimos el Set<Rol> a List<String> para el DTO
         List<String> roleNames = user.getRoles().stream()
                 .map(Rol::getName)
                 .collect(Collectors.toList());
 
-        return new UserDTO(
+        return new UserResponseDTO(
                 user.getId(),
                 user.getEmail(),
                 roleNames // Pasamos la lista
