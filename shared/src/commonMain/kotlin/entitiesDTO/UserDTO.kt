@@ -1,4 +1,4 @@
-package com.edevare.shared.DTOsEntities
+package com.edevare.shared.entitiesDTO
 
 import kotlinx.serialization.Serializable
 

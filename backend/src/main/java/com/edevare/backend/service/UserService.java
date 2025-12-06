@@ -6,7 +6,7 @@ import com.edevare.backend.model.Rol;
 import com.edevare.backend.model.User;
 import com.edevare.backend.repository.RolRepository;
 import com.edevare.backend.repository.UserRepository;
-import com.edevare.shared.DTOsEntities.UserDTO;
+import com.edevare.shared.entitiesDTO.UserDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -44,8 +44,8 @@ public class UserService {
         //Coversion de DTO a entidad
         User newUser = new User();
         newUser.setEmail(user.getEmail());
-        newUser.setPassword_hash(password);
-        newUser.setRol(rol);
+        newUser.setPasswordHash(password);
+        newUser.setRole(rol);
 
         // 3. Asignar Rol y Guardar
         User savedUser = userRepository.save(newUser);
@@ -73,9 +73,9 @@ public class UserService {
 
     protected UserDTO mapToDTO(User user) {
         return new UserDTO(
-                user.getId_user(),
+                user.getId(),
                 user.getEmail(),
-                user.getRol().getName()
+                user.getRole().getName()
         );
     }
 
