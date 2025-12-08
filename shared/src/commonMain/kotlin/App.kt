@@ -19,3 +19,10 @@ data class AuthResponse(
     val token: String,
     val role: String
 )
+
+//DTO para iniciar sesion (solo con el email y la contraseña)
+@Serializable
+data class LoginRequest(
+    val email: String,
+    val password: String
+)

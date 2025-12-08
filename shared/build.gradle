@@ -9,7 +9,9 @@ version = '1.0-SNAPSHOT'
 
 kotlin {
     // Backend (Java) pueda acceder a este código
-    jvm()
+    jvm {
+        withJava()
+    }
 
     sourceSets {
         commonMain {
@@ -18,7 +20,7 @@ kotlin {
                 // Cliente HTTP para KMP
                 api 'io.ktor:ktor-client-core:2.3.8'
                 // Librería para serializar DTOs a JSON
-                api 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3'
+                api'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3'
             }
         }
     }
