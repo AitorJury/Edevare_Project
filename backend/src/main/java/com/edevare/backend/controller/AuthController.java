@@ -33,10 +33,14 @@ public class AuthController {
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
-    //TODO crear endpoint para el login
-//    @PostMapping("/login")
-//    public ResponseEntity<UserResponseDTO> loginUser(@RequestBody UserRequestDTO userRequestDTO){
-//
-//    }
-
+    /**
+     * Endpoint para autenticación de usuarios.
+     * Si las credenciales son válidas, devuelve el UserResponseDTO que contiene
+     * el JWT en el campo 'passwordHash'.
+     */
+    @PostMapping("/login")
+    public ResponseEntity<UserResponseDTO> loginUser(@RequestBody UserRequestDTO userRequestDTO){
+        UserResponseDTO loggedInUser = userService.userLogin(userRequestDTO);
+        return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
+    }
 }

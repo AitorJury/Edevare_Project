@@ -10,6 +10,8 @@ import com.edevare.backend.repository.UserRepository;
 import com.edevare.shared.entitiesDTO.UserRequestDTO;
 import com.edevare.shared.entitiesDTO.UserResponseDTO;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -28,12 +30,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final RolRepository rolRepository;
     private final SecurityConfig securityConfig;
+    private final JwtService jwtService;
 
-    //Este constructor sirve como inyector de dependencias, mejor que el @Autowire
-    public UserService(UserRepository userRepository, RolRepository rolRepository, SecurityConfig securityConfig) {
+    //Este constructor sirve como inyector de dependencias.
+    public UserService(UserRepository userRepository, RolRepository rolRepository, SecurityConfig securityConfig, JwtService jwtService) {
         this.userRepository = userRepository;
         this.rolRepository = rolRepository;
         this.securityConfig = securityConfig;
+        this.jwtService = jwtService;
     }
 
     @Transactional
@@ -68,6 +72,35 @@ public class UserService {
 
     }
 
+    /**
+     * Lógica de para el login de usuario.
+     * Busca el usuario, verifica la contraseña y genera un token JWT.
+     *
+     * @param userRequestDTO Contiene el email y la contraseña plana.
+     * @return UserResponseDTO con el token JWT en el campo passwordHash.
+     */
+    public UserResponseDTO userLogin(UserRequestDTO userRequestDTO) {
+        // 1. Buscar usuario por email
+        User user = userRepository.findUserByEmail(userRequestDTO.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("Credenciales inválidas."));
+
+        // 2. Verificar contraseña
+        PasswordEncoder encoder = securityConfig.passwordEncoder();
+
+        if (!encoder.matches(userRequestDTO.getPassword(), user.getPasswordHash())) {
+            // Se usa la misma excepción para no dar pistas sobre si el email existe o no
+            throw new UsernameNotFoundException("Credenciales inválidas.");
+        }
+
+        // 3. Generar token JWT
+        String token = jwtService.generateToken(user);
+        // Sobreescribimos el passwordHash.
+        user.setPasswordHash(token);
+
+        // 4. Mapear a DTO
+        return mapToDTO(user);
+    }
+
     public Optional<User> findByEmail(String email) {
         return userRepository.findUserByEmail(email);
     }
@@ -98,6 +131,4 @@ public class UserService {
                 roleNames // Pasamos la lista
         );
     }
-
-
 }
