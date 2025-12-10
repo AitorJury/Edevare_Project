@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # Definición del servicio de BD
   db:
-    image: postgres:latest
+    image: postgres:15
     container_name: edevare-db
 
     # Reinicia el contenedor si se detiene inesperadamente
