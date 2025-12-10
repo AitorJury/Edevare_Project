@@ -1,6 +1,5 @@
 package com.edevare.backend.service;
 
-import com.edevare.backend.config.SecurityConfig;
 import com.edevare.backend.exceptions.RoleExistException;
 import com.edevare.backend.exceptions.UserExistException;
 import com.edevare.backend.model.Rol;
@@ -27,13 +26,11 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RolRepository rolRepository;
-    private final SecurityConfig securityConfig;
 
     //Este constructor sirve como inyector de dependencias, mejor que el @Autowire
-    public UserService(UserRepository userRepository, RolRepository rolRepository, SecurityConfig securityConfig) {
+    public UserService(UserRepository userRepository, RolRepository rolRepository) {
         this.userRepository = userRepository;
         this.rolRepository = rolRepository;
-        this.securityConfig = securityConfig;
     }
 
     @Transactional
@@ -56,10 +53,8 @@ public class UserService {
         //Coversion de DTO a entidad
         User newUser = new User();
         newUser.setEmail(user.getEmail());
-        //Hasheo de la contraseña
-        String encodedPassword = securityConfig.passwordEncoder().encode(user.getPassword());
         //Asignamos la contraseña hasheada
-        newUser.setPasswordHash(encodedPassword);
+        newUser.setPasswordHash(user.getPassword());
 
 
         // 3. Asignar Rol y Guardar
