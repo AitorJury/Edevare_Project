@@ -2,7 +2,9 @@ package com.edevare.backend.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -15,6 +17,7 @@ public class User {
 
     @Column(unique = true, nullable = false)
     private String email;
+
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
@@ -25,6 +28,37 @@ public class User {
             , inverseJoinColumns = @JoinColumn(name = "id_rol")
     )
     private Set<Rol> roles = new HashSet<>();
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private TeacherProfile teacherProfile;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private StudentProfile studentProfile;
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public StudentProfile getStudentProfile() {
+        return studentProfile;
+    }
+
+    public void setStudentProfile(StudentProfile studentProfile) {
+        this.studentProfile = studentProfile;
+    }
+
+    public TeacherProfile getTeacherProfile() {
+        return teacherProfile;
+    }
+
+    public void setTeacherProfile(TeacherProfile teacherProfile) {
+        this.teacherProfile = teacherProfile;
+    }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Task> tasks = new ArrayList<>();
 
     public Long getId() {
         return id;
