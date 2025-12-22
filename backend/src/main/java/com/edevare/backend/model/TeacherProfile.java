@@ -1,6 +1,6 @@
 package com.edevare.backend.model;
 
-import com.edevare.backend.types.TeacherModality;
+import com.edevare.shared.enums.TeacherModality;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;

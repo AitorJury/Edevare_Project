@@ -1,6 +1,6 @@
 package com.edevare.backend.model;
 
-import com.edevare.backend.types.OfferClassState;
+import com.edevare.shared.enums.OfferClassState;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -32,6 +32,16 @@ public class OfferClass {
 
     @Column(name = "price_class")
     private BigDecimal priceClass;
+
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public Long getIdOfferClass() {
         return idOfferClass;
