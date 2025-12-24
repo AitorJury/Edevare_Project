@@ -10,5 +10,7 @@ import kotlinx.serialization.Serializable
 data class OfferRequestDTO(
     val idTeacher: Long,
     val idSubject: Long,
+    val title: String,
+    val price: Double,
     val description: String? = null
 )

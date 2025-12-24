@@ -1,10 +1,12 @@
 package com.edevare.backend.service;
 
-import com.edevare.backend.model.OfferClass;
+
+
 import com.edevare.shared.entitiesDTO.OfferRequestDTO;
 import com.edevare.shared.entitiesDTO.OfferResponseDTO;
 
 import java.util.List;
+
 
 public interface OfferClassService {
 
@@ -18,4 +20,11 @@ public interface OfferClassService {
     List<OfferResponseDTO> getOffersByTeacher(Long teacherId);
 
     void deleteOffer(Long idOffer);
+
+    //Busca ofertas donde el nombre de la materia contenga el texto especificado
+    // y el nivel academico coincida(si se especifica)
+    List<OfferResponseDTO> searchBySubjectAndLevel(
+            String name,
+            String academicLevel
+    );
 }

@@ -1,7 +1,7 @@
 package com.edevare.backend.service;
 
 import com.edevare.backend.exceptions.SubjectNotFoundException;
-import com.edevare.backend.exceptions.TeacherExistException;
+import com.edevare.backend.exceptions.TeacherNotFoundException;
 import com.edevare.backend.model.OfferClass;
 import com.edevare.backend.model.Subject;
 import com.edevare.backend.model.TeacherProfile;
@@ -16,6 +16,8 @@ import com.edevare.shared.enums.OfferClassState;
 import com.edevare.shared.enums.TeacherModality;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -26,8 +28,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class OfferClassServiceImplTest {
 
@@ -45,6 +46,7 @@ class OfferClassServiceImplTest {
     private TeacherProfile teacherProfile;
     private Subject subject;
     private OfferClass offer;
+    private OfferRequestDTO requestDTO;
 
 
     @BeforeEach
@@ -56,11 +58,29 @@ class OfferClassServiceImplTest {
         teacherProfile.setId(1L);
         teacherProfile.setHourlyRate(BigDecimal.valueOf(20));
         teacherProfile.setModality(TeacherModality.HYBRID);
+        teacherProfile.setHourlyRate(BigDecimal.valueOf(20));
 
         subject = new Subject();
         subject.setIdSubject(1L);
         subject.setName("Matematicas");
         subject.setAcademicLevel("Bachillerato");
+
+        // CORRECCIÓN: Inicializar 'offer' ANTES de usarlo en 'requestDTO'
+        offer = new OfferClass();
+        offer.setIdOfferClass(1L);
+        offer.setTitleClass("Clase de prueba");
+        offer.setDescription("Descripción de prueba");
+        offer.setTeacher(teacherProfile);
+        offer.setSubject(subject);
+        offer.setPriceClass(BigDecimal.valueOf(20));
+
+        requestDTO = new OfferRequestDTO(
+                teacherProfile.getId(),
+                subject.getIdSubject(),
+                offer.getTitleClass(),
+                teacherProfile.getHourlyRate().doubleValue(),
+                offer.getDescription()
+        );
 
     }
 
@@ -69,37 +89,16 @@ class OfferClassServiceImplTest {
     @Test
     void createOfferClassSucceed() {
 
-        TeacherProfile teacherProfile = new TeacherProfile();
-        teacherProfile.setId(10L);
-        teacherProfile.setHourlyRate(BigDecimal.valueOf(20));
-        teacherProfile.setModality(TeacherModality.HYBRID);
-
-        Subject subject = new Subject();
-        subject.setIdSubject(1L);
-        subject.setName("Matematicas");
-        subject.setAcademicLevel("Bachillerato");
 
         OfferClass savedOfferClass = new OfferClass();
-        savedOfferClass.setIdOfferClass(subject.getIdSubject());
+        savedOfferClass.setIdOfferClass(100L); // ID simulado de la oferta
         savedOfferClass.setTeacher(teacherProfile);
         savedOfferClass.setSubject(subject);
         savedOfferClass.setState(OfferClassState.ACTIVE);
         savedOfferClass.setPriceClass(BigDecimal.valueOf(23));
-        savedOfferClass.setTitleClass("Clase de matematicas");
-        savedOfferClass.setDescription("Matematicas aplicadas");
+        savedOfferClass.setTitleClass(offer.getTitleClass());
+        savedOfferClass.setDescription(offer.getDescription());
 
-
-        long idTeacher = teacherProfile.getId();
-        long idSubject = subject.getIdSubject();
-        String description = savedOfferClass.getDescription();
-
-        //Preparar los datos que recibe
-        OfferRequestDTO requestDTO = new OfferRequestDTO(
-                idTeacher,
-                idSubject,
-                description
-
-        );
 
         //Simular el comportamiento que haran los mocks
         when(teacherProfileRepository.findById(anyLong()))
@@ -118,9 +117,9 @@ class OfferClassServiceImplTest {
 
         //Asserts para verificar los resultados
         assertNotNull(response);
-        assertEquals(idTeacher, response.getTeacherId());
-        assertEquals(idSubject, response.getId());
-        assertEquals(description, response.getDescription());
+        assertEquals(requestDTO.getIdTeacher(), response.getTeacherId());
+        assertEquals(savedOfferClass.getIdOfferClass(), response.getId()); // Comparar con el ID de la oferta guardada
+        assertEquals(requestDTO.getDescription(), response.getDescription());
 
         // 5. VERIFY: Verificar que se llamaron los mocks
         verify(teacherProfileRepository).findById(anyLong());
@@ -130,16 +129,12 @@ class OfferClassServiceImplTest {
     //Intento de crear oferta de clase sin existir profesor
     @Test
     void createOfferClassTeacherNotFound() {
-        OfferRequestDTO requestDTO = new OfferRequestDTO(
-                1L,
-                1L,
-                "Matematicas aplicadas"
-        );
+
 
         when(teacherProfileRepository.findById(requestDTO.getIdTeacher()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(TeacherExistException.class, () -> {
+        assertThrows(TeacherNotFoundException.class, () -> {
             offerClassService.createOffer(requestDTO);
         });
     }
@@ -148,12 +143,6 @@ class OfferClassServiceImplTest {
     @Test
     void createOfferClassSignatureNotFound() {
 
-        OfferRequestDTO requestDTO = new OfferRequestDTO(
-                1L,
-                2L,
-                "Fisica cuantica"
-
-        );
 
         // Simulamos que el profesor SÍ existe
         when(teacherProfileRepository.findById(requestDTO.getIdTeacher()))
@@ -173,11 +162,6 @@ class OfferClassServiceImplTest {
     @Test
     void getAllOfferClassesShouldReturnList() {
 
-        offer = new OfferClass();
-        offer.setIdOfferClass(1L);
-        offer.setTeacher(teacherProfile);
-        offer.setSubject(subject);
-        offer.setDescription("Clase test");
 
         when(offerClassRepository.findAll()).thenReturn(List.of(offer));
 
@@ -191,10 +175,6 @@ class OfferClassServiceImplTest {
     @Test
     void getOffersBySubjectShouldReturnList() {
 
-        offer = new OfferClass();
-        offer.setIdOfferClass(1L);
-        offer.setTeacher(teacherProfile);
-        offer.setSubject(subject);
 
         when(offerClassRepository.findBySubject_IdSubject(subject.getIdSubject()))
                 .thenReturn(List.of(offer));
@@ -210,10 +190,7 @@ class OfferClassServiceImplTest {
 
     @Test
     void getOffersByTeacherShouldReturnList() {
-        offer = new OfferClass();
-        offer.setIdOfferClass(1L);
-        offer.setTeacher(teacherProfile);
-        offer.setSubject(subject);
+
 
         when(offerClassRepository.findByTeacher_Id(teacherProfile.getId()))
                 .thenReturn(List.of(offer));
@@ -233,6 +210,58 @@ class OfferClassServiceImplTest {
         offerClassService.deleteOffer(idToDelete);
 
         verify(offerClassRepository).deleteById(idToDelete);
+    }
+
+    //Test para validar que si se busca una materia que no tenga resultados devuelva una lista vacia y no un null
+    @Test
+    void getOffersBySubjectShouldReturnEmptyList() {
+        Long subjectId = 99L;
+
+        // CORRECCIÓN: Mockear y llamar al método específico 'findBySubject...'
+        when(offerClassRepository.findBySubject_IdSubject(subjectId)).thenReturn(List.of());
+
+        List<OfferResponseDTO> result = offerClassService.getOffersBySubject(subjectId);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(offerClassRepository).findBySubject_IdSubject(subjectId);
+
+    }
+
+
+    @ParameterizedTest(name = "Busqueda con Subject: {0}, Level: {1}")
+    @CsvSource({
+            "Matemáticas, Bachillerato",
+            "'',Bachillerato",
+            "Matemáticas , ''"
+    })
+    void searchBySubjectAndLevel_ShouldReturnResults(String subjectName, String academicLevel) {
+
+        when(offerClassRepository.searchBySubjectAndLevel(subjectName, academicLevel))
+                .thenReturn(List.of(offer));
+
+        List<OfferResponseDTO> res = offerClassService.searchBySubjectAndLevel(subjectName, academicLevel);
+
+        assertNotNull(res);
+        assertFalse(res.isEmpty());
+
+        verify(offerClassRepository).searchBySubjectAndLevel(subjectName, academicLevel);
+
+    }
+
+    @Test
+    void searchBySubjectAndLevelAllEmpty() {
+        String subjectTest = "";
+        String levelTest = "";
+        when(offerClassRepository.searchBySubjectAndLevel(subjectTest, levelTest))
+                .thenReturn(List.of(offer));
+
+        List<OfferResponseDTO> res = offerClassService.searchBySubjectAndLevel(subjectTest, levelTest);
+
+        assertTrue(res.isEmpty());
+        assertNotNull(res);
+        verifyNoInteractions(offerClassRepository);
+
     }
 
 }

@@ -1,9 +1,7 @@
 package com.edevare.shared.entitiesDTO
 
 import com.edevare.shared.enums.TeacherModality
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import java.math.BigDecimal
 
 
 /**
@@ -16,10 +14,10 @@ import java.math.BigDecimal
 data class OfferResponseDTO(
     val id: Long,
     val subjectName: String,
+    val title: String,
     val academicLevel: String?,
     val teacherId: Long,
-    @Contextual
-    val hourlyRate: BigDecimal,
+    val price: Double,
     val modality: TeacherModality,
     val description: String?
 )
