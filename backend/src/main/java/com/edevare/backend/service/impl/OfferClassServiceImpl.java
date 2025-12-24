@@ -2,6 +2,7 @@ package com.edevare.backend.service.impl;
 
 import com.edevare.backend.exceptions.SubjectNotFoundException;
 import com.edevare.backend.exceptions.TeacherNotFoundException;
+import com.edevare.backend.exceptions.TeacherNotFoundException;
 import com.edevare.backend.model.OfferClass;
 import com.edevare.backend.repository.OfferClassRepository;
 import com.edevare.backend.repository.SubjectRepository;
@@ -22,12 +23,20 @@ public class OfferClassServiceImpl implements OfferClassService {
     private final OfferClassRepository offerClassRepository;
 
     //Inyeccion de dependencias
-    public OfferClassServiceImpl(OfferClassRepository offerClassRepository, TeacherProfileRepository teacherProfileRepository, SubjectRepository subjectRepository) {
+    public OfferClassServiceImpl(OfferClassRepository offerClassRepository,TeacherProfileRepository teacherProfileRepository, SubjectRepository subjectRepository) {
         this.teacherProfileRepository = teacherProfileRepository;
         this.subjectRepository = subjectRepository;
         this.offerClassRepository = offerClassRepository;
     }
 
+    /**
+     * Crea una nueva oferta de clase validando que el profesor y la materia existan.
+     *
+     * @param request DTO con la información necesaria para crear la oferta (IDs y descripción).
+     * @return OfferResponseDTO con los datos de la oferta creada.
+     * @throws TeacherNotFoundException Si el profesor no se encuentra en la base de datos.
+     * @throws SubjectNotFoundException Si la materia no se encuentra en la base de datos.
+     */
     @Override
     @Transactional
     public OfferResponseDTO createOffer(OfferRequestDTO request) throws TeacherNotFoundException, SubjectNotFoundException {
@@ -53,6 +62,11 @@ public class OfferClassServiceImpl implements OfferClassService {
 
     }
 
+    /**
+     * Obtiene todas las ofertas de clases disponibles en el sistema.
+     *
+     * @return Lista de OfferResponseDTO con todas las ofertas.
+     */
     @Override
     public List<OfferResponseDTO> getAllOfferClasses() throws SubjectNotFoundException {
 
@@ -64,6 +78,12 @@ public class OfferClassServiceImpl implements OfferClassService {
 
     }
 
+    /**
+     * Busca ofertas de clases filtradas por materia.
+     *
+     * @param idSubject ID de la materia a buscar.
+     * @return Lista de ofertas asociadas a esa materia.
+     */
     @Override
     public List<OfferResponseDTO> getOffersBySubject(Long idSubject) throws SubjectNotFoundException {
         return offerClassRepository.findBySubject_IdSubject(idSubject).stream()
@@ -71,6 +91,12 @@ public class OfferClassServiceImpl implements OfferClassService {
                 .toList();
     }
 
+    /**
+     * Busca ofertas de clases filtradas por profesor.
+     *
+     * @param teacherId ID del profesor.
+     * @return Lista de ofertas creadas por ese profesor.
+     */
     @Override
     public List<OfferResponseDTO> getOffersByTeacher(Long teacherId) throws SubjectNotFoundException, TeacherNotFoundException {
         return offerClassRepository.findByTeacher_Id(teacherId)
@@ -79,6 +105,11 @@ public class OfferClassServiceImpl implements OfferClassService {
                 .toList();
     }
 
+    /**
+     * Elimina una oferta de clase por su ID.
+     *
+     * @param idOffer el ID de la oferta a eliminar.
+     */
     @Override
     public void deleteOffer(Long idOffer) {
         offerClassRepository.deleteById(idOffer);
@@ -100,12 +131,18 @@ public class OfferClassServiceImpl implements OfferClassService {
                 .toList();
     }
 
+    /**
+     * Convierte una entidad OfferClass a su representación DTO OfferResponseDTO.
+     *
+     * @param offerClass Entidad a convertir.
+     * @return DTO con los datos de la entidad.
+     */
     protected OfferResponseDTO mapToDTO(OfferClass offerClass) {
         return new OfferResponseDTO(
                 offerClass.getIdOfferClass(),
                 offerClass.getSubject().getName(),
-                offerClass.getSubject().getAcademicLevel(),
                 offerClass.getTitleClass(),
+                offerClass.getSubject().getAcademicLevel(),
                 offerClass.getTeacher().getId(),
                 offerClass.getPriceClass().doubleValue(),
                 offerClass.getTeacher().getModality(),

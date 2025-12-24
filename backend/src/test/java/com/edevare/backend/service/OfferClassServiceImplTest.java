@@ -35,7 +35,7 @@ class OfferClassServiceImplTest {
     //Clase a usar
     private OfferClassServiceImpl offerClassService;
 
-    //Dependecias a simular
+    //Dependencias a simular
     @Mock
     private TeacherProfileRepository teacherProfileRepository;
     @Mock
@@ -49,6 +49,10 @@ class OfferClassServiceImplTest {
     private OfferRequestDTO requestDTO;
 
 
+    /**
+     * Configuración inicial que se ejecuta antes de cada test.
+     * Inicializa los mocks y crea los objetos de prueba por defecto (Teacher, Subject, OfferClass, DTO).
+     */
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -85,13 +89,16 @@ class OfferClassServiceImplTest {
     }
 
 
-    //Test de creación de oferta de clase exitosa
+    /**
+     * Verifica que se pueda crear una oferta de clase exitosamente cuando el profesor y la materia existen.
+     * Comprueba que el DTO de respuesta contenga los datos correctos y que se llame al repositorio.
+     */
     @Test
     void createOfferClassSucceed() {
 
 
         OfferClass savedOfferClass = new OfferClass();
-        savedOfferClass.setIdOfferClass(100L); // ID simulado de la oferta
+        savedOfferClass.setIdOfferClass(100L); // para ID simulando de la oferta
         savedOfferClass.setTeacher(teacherProfile);
         savedOfferClass.setSubject(subject);
         savedOfferClass.setState(OfferClassState.ACTIVE);
@@ -126,7 +133,10 @@ class OfferClassServiceImplTest {
         verify(subjectRepository).findById(anyLong());
     }
 
-    //Intento de crear oferta de clase sin existir profesor
+    /**
+     * Verifica que se lance una excepción TeacherNotFoundException si se intenta crear una oferta
+     * con un ID de profesor que no existe en la base de datos.
+     */
     @Test
     void createOfferClassTeacherNotFound() {
 
@@ -134,12 +144,14 @@ class OfferClassServiceImplTest {
         when(teacherProfileRepository.findById(requestDTO.getIdTeacher()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(TeacherNotFoundException.class, () -> {
-            offerClassService.createOffer(requestDTO);
-        });
+        assertThrows(TeacherNotFoundException.class, () ->
+                offerClassService.createOffer(requestDTO));
     }
 
-    //Intento de crear oferta de clase sin existir materia
+    /**
+     * Verifica que se lance una excepción SubjectNotFoundException si se intenta crear una oferta
+     * con un ID de materia que no existe en la base de datos.
+     */
     @Test
     void createOfferClassSignatureNotFound() {
 
@@ -153,25 +165,33 @@ class OfferClassServiceImplTest {
                 .thenReturn(Optional.empty());
 
 
-        assertThrows(SubjectNotFoundException.class, () -> {
-            offerClassService.createOffer(requestDTO);
-        });
+        assertThrows(SubjectNotFoundException.class, () ->
+                offerClassService.createOffer(requestDTO));
 
     }
 
+    /**
+     * Verifica que el metodo getAllOfferClasses devuelva una lista de ofertas correctamente mapeadas
+     * cuando existen datos en el repositorio.
+     */
     @Test
     void getAllOfferClassesShouldReturnList() {
 
 
-        when(offerClassRepository.findAll()).thenReturn(List.of(offer));
+        when(offerClassRepository.getAllOfferClasses()).thenReturn(List.of(offer));
 
         List<OfferResponseDTO> res = offerClassService.getAllOfferClasses();
 
         assertNotNull(res);
         assertFalse(res.isEmpty());
-        verify(offerClassRepository).findAll();
+        assertEquals(1, res.size());
+        assertEquals(offer.getTitleClass(), res.get(0).getTitle());
+        verify(offerClassRepository).getAllOfferClasses();
     }
 
+    /**
+     * Verifica que el metodo getOffersBySubject devuelva una lista de ofertas filtradas por el ID de la materia.
+     */
     @Test
     void getOffersBySubjectShouldReturnList() {
 
@@ -188,6 +208,9 @@ class OfferClassServiceImplTest {
 
     }
 
+    /**
+     * Verifica que el metodo getOffersByTeacher devuelva una lista de ofertas filtradas por el ID del profesor.
+     */
     @Test
     void getOffersByTeacherShouldReturnList() {
 
@@ -203,6 +226,9 @@ class OfferClassServiceImplTest {
 
     }
 
+    /**
+     * Verifica que el metodo deleteOffer llame al metodo deleteById del repositorio con el ID correcto.
+     */
     @Test
     void deleteOfferShouldCallRepository() {
         Long idToDelete = 1L;
@@ -212,7 +238,10 @@ class OfferClassServiceImplTest {
         verify(offerClassRepository).deleteById(idToDelete);
     }
 
-    //Test para validar que si se busca una materia que no tenga resultados devuelva una lista vacia y no un null
+    /**
+     * Verifica que getOffersBySubject devuelva una lista vacía (y no null) cuando no se encuentran
+     * ofertas para la materia especificada.
+     */
     @Test
     void getOffersBySubjectShouldReturnEmptyList() {
         Long subjectId = 99L;
@@ -229,6 +258,10 @@ class OfferClassServiceImplTest {
     }
 
 
+    /**
+     * Verifica que searchBySubjectAndLevel devuelva resultados correctos para diferentes combinaciones
+     * de nombre de materia y nivel académico válidos.
+     */
     @ParameterizedTest(name = "Busqueda con Subject: {0}, Level: {1}")
     @CsvSource({
             "Matemáticas, Bachillerato",
@@ -249,6 +282,11 @@ class OfferClassServiceImplTest {
 
     }
 
+
+    /**
+     * Prueba el comportamiento del metodo searchBySubjectAndLevel cuando se envían cadenas vacías como parámetros.
+     * Verifica que retorne una lista vacía y que no haya interacciones con el repositorio.
+     */
     @Test
     void searchBySubjectAndLevelAllEmpty() {
         String subjectTest = "";
@@ -262,6 +300,22 @@ class OfferClassServiceImplTest {
         assertNotNull(res);
         verifyNoInteractions(offerClassRepository);
 
+    }
+
+    /**
+     * Metodo de prueba para verificar el comportamiento del metodo searchBySubjectAndLevel cuando
+     * los parámetros subjectName o academicLevel son nulos.
+     * Garantiza que el resultado sea una lista vacía y que no se produzcan interacciones con el repositorio.
+     *
+     */
+
+    @Test
+    void searchBySubjectAndLevelNull() {
+
+        List<OfferResponseDTO> res = offerClassService.searchBySubjectAndLevel(null, null);
+
+        assertTrue(res.isEmpty());
+        verifyNoInteractions(offerClassRepository);
     }
 
 }
