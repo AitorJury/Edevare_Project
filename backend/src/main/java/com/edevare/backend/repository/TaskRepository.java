@@ -7,4 +7,13 @@ import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByUser_Id(Long userId);
+
+    /**
+     * Permite filtrar las tareas del usuario por su estado si esta completada o no
+     *
+     * @param userId    Long
+     * @param completed boolean
+     * @return List
+     */
+    List<Task> findByUser_IdAndCompleted(Long userId, boolean completed);
 }

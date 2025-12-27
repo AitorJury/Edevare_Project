@@ -2,20 +2,26 @@ package com.edevare.backend.model;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "rol")
 public class Rol {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_rol;
-    private String name;
+    @Column(name = "id_rol")
+    private Long idRol;
 
-    public Long getId_rol() {
-        return id_rol;
+    private String name;
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users;
+
+    public Long getIdRol() {
+        return idRol;
     }
 
-    public void setId_rol(Long id_rol) {
-        this.id_rol = id_rol;
+    public void setIdRol(Long id_rol) {
+        this.idRol = id_rol;
     }
 
     public String getName() {
