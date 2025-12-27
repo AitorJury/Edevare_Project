@@ -1,32 +1,55 @@
 package com.edevare.backend.model;
 
+import com.edevare.shared.enums.TeacherModality;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "teacher_profile")
 public class TeacherProfile {
+    //No hay que decirle que ser genere el id, porque es el que vendra del usuario
     @Id
-    @Column(name = "id_teacher")
-    private Long id;//No hay que decirle que ser genere el id, porque es el que vendra del usuario
-    @ManyToOne
+    @Column(name = "id_user")
+    private Long id;
+
+    @OneToOne
+    @MapsId
     @JoinColumn(name = "id_user")
     private User user;
+
     private String description;
-    private double hourlyRate;
-    private String modality;//Online, presencial, hibrido
+
+    private BigDecimal hourlyRate;
+
+    @Enumerated(EnumType.STRING)
+    private TeacherModality modality;//Online, presencial, hibrido
+
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OfferClass> offerClasses = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TeacherProfile that = (TeacherProfile) o;
-        return Double.compare(hourlyRate, that.hourlyRate) == 0 && Objects.equals(id, that.id) && Objects.equals(user, that.user) && Objects.equals(description, that.description) && Objects.equals(modality, that.modality);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, description, hourlyRate, modality);
+        return Objects.hash(id);
+    }
+
+    public BigDecimal getHourlyRate() {
+        return hourlyRate;
+    }
+
+    public void setHourlyRate(BigDecimal hourlyRate) {
+        this.hourlyRate = hourlyRate;
     }
 
     public Long getId() {
@@ -45,19 +68,11 @@ public class TeacherProfile {
         this.description = description;
     }
 
-    public double getHourlyRate() {
-        return hourlyRate;
-    }
-
-    public void setHourlyRate(double hourlyRate) {
-        this.hourlyRate = hourlyRate;
-    }
-
-    public String getModality() {
+    public TeacherModality getModality() {
         return modality;
     }
 
-    public void setModality(String modality) {
+    public void setModality(TeacherModality modality) {
         this.modality = modality;
     }
 
@@ -67,5 +82,13 @@ public class TeacherProfile {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<OfferClass> getOfferClasses() {
+        return offerClasses;
+    }
+
+    public void setOfferClasses(List<OfferClass> offerClasses) {
+        this.offerClasses = offerClasses;
     }
 }
