@@ -63,6 +63,30 @@ public class TaskService {
     }
 
     /**
+     * Actualiza el estado de completado de una tarea (B2.1.G).
+     */
+    @Transactional
+    public TaskDTO updateTaskStatus(Long taskId, boolean status) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        task.setCompleted(status);
+        Task updatedTask = taskRepository.save(task);
+        return mapToDTO(updatedTask);
+    }
+
+    /**
+     * Elimina una tarea por su ID (B2.1.G).
+     */
+    @Transactional
+    public void deleteTask(Long taskId) {
+        if (!taskRepository.existsById(taskId)) {
+            throw new RuntimeException("Task not found");
+        }
+        taskRepository.deleteById(taskId);
+    }
+
+    /**
      *
      * @return Metodo que sirve para mapear la entidad tarea a clase TaskDTO
      */
@@ -72,7 +96,7 @@ public class TaskService {
                 task.getTitle(),
                 task.getPriority(),
                 task.isCompleted(),
-                task.getCreatedAt().toString(),
+                task.getCreated_at() != null ? task.getCreated_at().toString() : null,
                 task.getUser().getId()
         );
     }
