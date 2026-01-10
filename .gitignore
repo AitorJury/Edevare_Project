@@ -47,6 +47,3 @@ bin/
 
 # Credenciales de Docker Compose
 .env
-
-# Firebase secret key
-serviceAccountKey.json
