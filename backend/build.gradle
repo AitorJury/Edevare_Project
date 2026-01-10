@@ -44,6 +44,9 @@ dependencies {
     // JUnit 5
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Firebase Admin SDK (Añadir esta línea)
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
 }
 
 test {
