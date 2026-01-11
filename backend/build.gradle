@@ -21,6 +21,9 @@ dependencies {
     // Spring Boot y Web (API REST)
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    //Websocket y stomp
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
     // Hibernate
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     // Driver PostgreSQL
