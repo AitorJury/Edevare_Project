@@ -1,13 +1,12 @@
-package com.edevare.backend.service.impl;
+package com.edevare.backend.services.impl;
 
 import com.edevare.backend.exceptions.SubjectNotFoundException;
-import com.edevare.backend.exceptions.TeacherNotFoundException;
 import com.edevare.backend.exceptions.TeacherNotFoundException;
 import com.edevare.backend.model.OfferClass;
 import com.edevare.backend.repository.OfferClassRepository;
 import com.edevare.backend.repository.SubjectRepository;
 import com.edevare.backend.repository.TeacherProfileRepository;
-import com.edevare.backend.service.OfferClassService;
+import com.edevare.backend.services.OfferClassService;
 import com.edevare.shared.entitiesDTO.OfferRequestDTO;
 import com.edevare.shared.entitiesDTO.OfferResponseDTO;
 import jakarta.transaction.Transactional;

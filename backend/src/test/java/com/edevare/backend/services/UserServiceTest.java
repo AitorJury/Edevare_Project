@@ -1,7 +1,6 @@
-package com.edevare.backend.service;
+package com.edevare.backend.services;
 
 import com.edevare.backend.config.SecurityConfig;
-import com.edevare.backend.exceptions.RoleExistException;
 import com.edevare.backend.exceptions.UserExistException;
 import com.edevare.backend.model.Rol;
 import com.edevare.backend.model.User;
@@ -10,11 +9,8 @@ import com.edevare.backend.repository.UserRepository;
 import com.edevare.shared.entitiesDTO.UserRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
