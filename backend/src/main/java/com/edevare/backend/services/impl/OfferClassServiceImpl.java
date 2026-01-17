@@ -69,7 +69,7 @@ public class OfferClassServiceImpl implements OfferClassService {
     @Override
     public List<OfferResponseDTO> getAllOfferClasses() throws SubjectNotFoundException {
 
-        return offerClassRepository.getAllOfferClasses()
+        return offerClassRepository.findAll()
                 .stream()
                 .map(this::mapToDTO)
                 .toList();

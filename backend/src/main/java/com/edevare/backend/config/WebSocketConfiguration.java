@@ -27,6 +27,6 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
         config.setApplicationDestinationPrefixes("/app");
 
         //Prefijo para mensajes que van de SERVIDOR -> CLIENTE
-        config.enableSimpleBroker("/queue");
+        config.enableSimpleBroker("/queue", "/topic"); //topic para mensajes generales
     }
 }

@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ChatMessageDTO(
     val id: Long? = null,
-    val senderId: String, //Quien envia el mensaje
-    val receiverId: String, // Quien lo recibe
-    val bodyMessage: String,
-    val timestamp: Long
+    val senderId: Long, //Quien envia el mensaje
+    val receiverId: Long, // Quien lo recibe
+    val contentMessage: String,
+    val timestamp: String
 )

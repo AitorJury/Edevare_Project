@@ -178,7 +178,7 @@ class OfferClassServiceImplTest {
     void getAllOfferClassesShouldReturnList() {
 
 
-        when(offerClassRepository.getAllOfferClasses()).thenReturn(List.of(offer));
+        when(offerClassRepository.findAll()).thenReturn(List.of(offer));
 
         List<OfferResponseDTO> res = offerClassService.getAllOfferClasses();
 
@@ -186,7 +186,7 @@ class OfferClassServiceImplTest {
         assertFalse(res.isEmpty());
         assertEquals(1, res.size());
         assertEquals(offer.getTitleClass(), res.get(0).getTitle());
-        verify(offerClassRepository).getAllOfferClasses();
+        verify(offerClassRepository).findAll();
     }
 
     /**
