@@ -18,6 +18,8 @@ repositories {
 }
 
 dependencies {
+    //Dependencia para kotlin jackson
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
     // Spring Boot y Web (API REST)
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
