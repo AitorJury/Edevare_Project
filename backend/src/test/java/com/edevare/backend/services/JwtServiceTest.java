@@ -1,12 +1,9 @@
-package com.edevare.backend.service;
+package com.edevare.backend.services;
 
 import com.edevare.backend.model.User;
-import com.edevare.backend.service.impl.JwtServiceImpl;
+import com.edevare.backend.services.impl.JwtServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 

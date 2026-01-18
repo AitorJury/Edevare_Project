@@ -21,6 +21,8 @@ kotlin {
                 api 'io.ktor:ktor-client-core:2.3.8'
                 // Librería para serializar DTOs a JSON
                 api'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3'
+                //Para manejar fechas en multiplataforma
+                api 'org.jetbrains.kotlinx:kotlinx-datetime:0.6.0'
             }
         }
     }

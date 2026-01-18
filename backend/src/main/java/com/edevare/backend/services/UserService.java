@@ -1,4 +1,4 @@
-package com.edevare.backend.service;
+package com.edevare.backend.services;
 
 import com.edevare.backend.config.SecurityConfig;
 import com.edevare.backend.exceptions.RoleExistException;

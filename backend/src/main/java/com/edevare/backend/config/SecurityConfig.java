@@ -31,6 +31,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Permitimos el acceso a lo que venga de /auth/** (Login, Registro)
                         .requestMatchers("/auth/**").permitAll()
+                        //Permiso para el websocket
+                        .requestMatchers("/ws-edevare/**").permitAll()
                         // El resto de peticiones (ej: /tasks) requieren autenticación
                         .anyRequest().authenticated()
                 )

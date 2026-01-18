@@ -2,7 +2,7 @@ package com.edevare.backend.config;
 
 import com.edevare.backend.model.User;
 import com.edevare.backend.repository.UserRepository;
-import com.edevare.backend.service.JwtService;
+import com.edevare.backend.services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

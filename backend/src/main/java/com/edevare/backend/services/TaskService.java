@@ -1,4 +1,4 @@
-package com.edevare.backend.service;
+package com.edevare.backend.services;
 
 import com.edevare.backend.model.Task;
 import com.edevare.backend.model.User;
@@ -96,7 +96,7 @@ public class TaskService {
                 task.getTitle(),
                 task.getPriority(),
                 task.isCompleted(),
-                task.getCreated_at() != null ? task.getCreated_at().toString() : null,
+                task.getCreatedAt() != null ? task.getCreatedAt().toString() : null,
                 task.getUser().getId()
         );
     }

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
+
 
 public interface OfferClassRepository extends JpaRepository<OfferClass, Long> {
 
@@ -21,7 +21,6 @@ public interface OfferClassRepository extends JpaRepository<OfferClass, Long> {
 
     List<OfferClass> findByTeacher_Id(Long teacherId);
 
-    List<OfferClass> getAllOfferClasses();
 
     @Query("SELECT o FROM OfferClass o " +
             "JOIN o.subject s " +

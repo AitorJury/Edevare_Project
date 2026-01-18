@@ -1,4 +1,4 @@
-package com.edevare.backend.service;
+package com.edevare.backend.services;
 
 import com.edevare.backend.model.PomodoroSession;
 import com.edevare.backend.model.User;
