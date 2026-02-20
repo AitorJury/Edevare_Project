@@ -1,7 +1,7 @@
 
 package com.edevare.backend.controller;
 
-import com.edevare.backend.service.UserService;
+import com.edevare.backend.services.UserService;
 import com.edevare.shared.entitiesDTO.UserRequestDTO;
 import com.edevare.shared.entitiesDTO.UserResponseDTO;
 import org.springframework.http.HttpStatus;
