@@ -48,22 +48,7 @@ Este proyecto ha sido desarrollado bajo estrictos estándares de calidad:
 
 1.  **Marketplace de Profesores:** Buscador avanzado de tutores particulares con sistema de perfiles y tarifas.
 2.  **Mensajería Real-time:** Comunicación fluida mediante WebSockets entre alumnos y profesores.
-3.  **Suite de Productividad:** * Temporizador Pomodoro integrado.
+3.  **Suite de Productividad:**
+    * Temporizador Pomodoro integrado.
     * Sistema de Flashcards para estudio activo.
     * Gestor de tareas (To-Do List) con prioridades.
-
----
-
-## 🔧 Instalación y Despliegue (En desarrollo)
-
-```bash
-# Clonar el repositorio
-git clone [https://github.com/AitorJury/Edevare_Project.git](https://github.com/AitorJury/Edevare_Project.git)
-
-# Ejecutar el Backend (Requiere JDK 17 y PostgreSQL)
-cd backend
-./gradlew bootRun
-
-# Ejecutar el Frontend (Android/Desktop)
-cd frontend
-./gradlew run
